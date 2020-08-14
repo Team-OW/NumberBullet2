@@ -1,4 +1,17 @@
-/[Ll]ibrary/
+# not ignore /[Ll]ibrary/PackageCache/com.unity.postprocessing@[version]/PostProcessing/Runtime/PostProcessLayer.cs
+!/[Ll]ibrary/
+/[Ll]ibrary/*
+!/[Ll]ibrary/PackageCache/
+/[Ll]ibrary/PackageCache/*
+!/[Ll]ibrary/PackageCache/com.unity.postprocessing@*/
+/[Ll]ibrary/PackageCache/com.unity.postprocessing@*/*
+!/[Ll]ibrary/PackageCache/com.unity.postprocessing@*/PostProcessing/
+/[Ll]ibrary/PackageCache/com.unity.postprocessing@*/PostProcessing/*
+!/[Ll]ibrary/PackageCache/com.unity.postprocessing@*/PostProcessing/Runtime/
+/[Ll]ibrary/PackageCache/com.unity.postprocessing@*/PostProcessing/Runtime/*
+!/[Ll]ibrary/PackageCache/com.unity.postprocessing@*/PostProcessing/Runtime/PostProcessLayer.cs
+!/[Ll]ibrary/PackageCache/com.unity.postprocessing@*/PostProcessing/Runtime/PostProcessLayer.cs.meta
+
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
