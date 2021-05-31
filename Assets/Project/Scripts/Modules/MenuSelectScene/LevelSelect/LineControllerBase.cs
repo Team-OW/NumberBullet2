@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using UniRx;
+﻿using UniRx;
 using UnityEngine;
 
 namespace Treevel.Modules.MenuSelectScene.LevelSelect
@@ -57,7 +56,7 @@ namespace Treevel.Modules.MenuSelectScene.LevelSelect
         /// <summary>
         /// データを保存するときのキー
         /// </summary>
-        protected string saveKey;
+        public string saveKey { get; protected set; }
 
         protected virtual void Awake()
         {
@@ -78,7 +77,7 @@ namespace Treevel.Modules.MenuSelectScene.LevelSelect
 
         protected abstract void SetSaveKey();
 
-        public abstract UniTask UpdateStateAsync();
+        public abstract void UpdateState();
 
         /// <summary>
         /// 曲線の通過点の位置を求める
