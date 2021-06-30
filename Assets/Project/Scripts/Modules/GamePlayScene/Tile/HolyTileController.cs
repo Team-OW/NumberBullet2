@@ -62,6 +62,7 @@ namespace Treevel.Modules.GamePlayScene.Tile
             {
                 // 親ボトルを無敵状態から元に戻す
                 bottle.GetComponent<BottleControllerBase>().isInvincibleByHoly.Value = false;
+                bottle.GetComponent<BottleControllerBase>().onInvincibleExpiredSubject.OnNext(bottle);
 
                 // ボトルが出る演出再生
                 _animator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BOTTLE_EXIT);
