@@ -46,34 +46,51 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         /// </summary>
         private bool _isBottleMoved = false;
 
+        /// <summary>
+        /// GustWind本体のRenderer
+        /// </summary>
+        private SpriteRenderer _coreSpriteRenderer;
+
+        /// <summary>
+        /// GustWind本体の当たり判定
+        /// </summary>
+        private BoxCollider2D _coreBoxCollider2D;
+
         private const string _ANIMATOR_PARAM_TRIGGER_WARNING = "Warning";
         private const string _ATTACK_ANIMATION_CLIP_NAME = "GustWind@attack";
         private static readonly int _ATTACK_STATE_NAME_HASH = Animator.StringToHash("GustWind@attack");
 
         private Animator _animator;
 
+        [SerializeField] private ParticleSystem _leafParticle;
+
         private void Awake()
         {
             base.Awake();
             _animator = GetComponent<Animator>();
+            var core = transform.Find("Core");
+            _coreSpriteRenderer = core.GetComponent<SpriteRenderer>();
+            _coreBoxCollider2D = core.GetComponent<BoxCollider2D>();
             this.OnTriggerEnter2DAsObservable()
                 .Where(_ => !_isBottleMoved)
                 .Subscribe(_ => {
                     _isBottleMoved = true;
                     MoveBottles();
                 }).AddTo(this);
-            GamePlayDirector.Instance.GameEnd.Subscribe(_ => _animator.speed = 0).AddTo(this);
+            GamePlayDirector.Instance.GameEnd.Subscribe(_ => {
+                _animator.speed = 0;
+                _leafParticle.Pause();
+            }).AddTo(this);
         }
 
         public override void Initialize(GimmickData gimmickData)
         {
             base.Initialize(gimmickData);
 
-            var coreSprite = transform.Find("Core").GetComponent<SpriteRenderer>();
             _targetDirection = gimmickData.targetDirection;
             // 縦の時は、ピッタリ画面端の外から画面もう一端の外まで動かせるように、
             // 横の時は、ピッタリ画面端からスタートし、縦と同じ距離を移動する（アニメーションの秒数でスピードを決めているので）
-            _attackMoveDistance = Constants.WindowSize.HEIGHT + coreSprite.size.y * transform.localScale.y;
+            _attackMoveDistance = Constants.WindowSize.HEIGHT + _coreSpriteRenderer.size.y * transform.localScale.y;
             switch (_targetDirection) {
                 case EDirection.ToLeft:
                 case EDirection.ToRight: {
@@ -82,9 +99,9 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
                     var sign = _targetDirection == EDirection.ToLeft ? 1 : -1;
                     var centerTilePos = BoardManager.Instance.GetTilePos(gimmickData.targetRow, EColumn.Center);
                     var yPos = centerTilePos.y;
-                    var startX = -sign * (Constants.WindowSize.WIDTH + coreSprite.size.y * transform.localScale.y) *
+                    var startX = sign * (Constants.WindowSize.WIDTH + _coreSpriteRenderer.size.y * transform.localScale.y) *
                                  0.5f;
-                    var endX = startX + sign * _attackMoveDistance;
+                    var endX = startX + -sign * _attackMoveDistance;
 
                     _attackStartPos = new Vector2(startX, yPos);
                     _attackEndPos = new Vector2(endX, yPos);
@@ -100,7 +117,7 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
                 case EDirection.ToUp: {
                     _targetLine = (int)gimmickData.targetColumn;
 
-                    var sign = _targetDirection == EDirection.ToUp ? 1 : -1;
+                    var sign = _targetDirection == EDirection.ToUp ? -1 : 1;
                     var centerTilePos = BoardManager.Instance.GetTilePos(ERow.Third, gimmickData.targetColumn);
                     var xPos = centerTilePos.x;
                     var startY = sign * _attackMoveDistance * 0.5f;
@@ -110,7 +127,7 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
                     _attackEndPos = new Vector2(xPos, endY);
 
                     transform.position = centerTilePos;
-                    transform.localScale = Vector3.Scale(transform.localScale, new Vector3(1, sign, 1));
+                    transform.localScale = Vector3.Scale(transform.localScale, new Vector3(1, -sign, 1));
                     break;
                 }
                 default:
@@ -127,6 +144,8 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             yield return new WaitUntil(() => _animator.GetCurrentAnimatorStateInfo(0).shortNameHash == _ATTACK_STATE_NAME_HASH);
 
             transform.position = _attackStartPos;
+            _coreSpriteRenderer.enabled = true;
+            _coreBoxCollider2D.enabled = true;
             SoundManager.Instance.PlaySE(ESEKey.Gimmick_Gust);
             yield return MoveDuringAttack();
 
