@@ -20,7 +20,7 @@ namespace Treevel.Modules.GamePlayScene.Bottle
         {
             transform.parent = bottleController.transform;
             // y座標を中心から上に調整する
-            transform.localPosition = new Vector3(0, 75f);
+            transform.localPosition = new Vector3(0, 5f);
         }
     }
 }
