@@ -54,7 +54,7 @@ MonoBehaviour:
     life: 1
     isSelfish: 0
     isDark: 0
-    isReverse: 0
+    isReverse: 1
   - type: 2
     initPos: 5
     goalColor: 1
@@ -111,7 +111,9 @@ MonoBehaviour:
     image:
       m_AssetGUID: 
       m_SubObjectName: 
+      m_SubObjectType: 
     video:
       m_AssetGUID: 
       m_SubObjectName: 
+      m_SubObjectType: 
   constraintStages: []
