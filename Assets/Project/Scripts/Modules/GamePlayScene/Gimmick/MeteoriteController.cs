@@ -25,50 +25,43 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         private Vector2 _startPosMargin;
 
         /// <summary>
+        /// 攻撃するために移動する距離
+        /// </summary>
+        private float _attackMoveDistance;
+
+        /// <summary>
         ///
         /// 隕石部分innsekibubunn
         /// </summary>
         [SerializeField] private GameObject _meteorite;
 
         /// <summary>
-        /// 速さ
-        /// </summary>
-        [SerializeField] private float _speed = 0.05f;
-
-        /// <summary>
         /// 警告オブジェクトインスタンス（ゲーム終了時片付けするためにメンバー変数として持つ）
         /// </summary>
         private GameObject _crack;
 
-        /// <summary>
-        /// 隕石の画像の表示時間
-        /// </summary>
-        [SerializeField] private float _meteoriteDisplayTime = 1.5f;
-
-        /// <summary>
-        /// 隕石本体移動させる用フラグ
-        /// </summary>
-        private bool _isMoving = false;
-
-        private SpriteRenderer _renderer;
+        private SpriteRenderer _meteoriteRenderer;
 
         private Animator _animator;
+
+        private const string _ANIMATOR_PARAM_TRIGGER_WARNING = "Warning";
+        private const string _ATTACK_ANIMATION_CLIP_NAME = "Meteorite@attack";
+        private static readonly int _ATTACK_STATE_NAME_HASH = Animator.StringToHash("Meteorite@attack");
 
         private void Awake()
         {
             base.Awake();
             _startPosMargin = new Vector2(2.5f * GameWindowController.Instance.GetTileWidth(), 1.5f * GameWindowController.Instance.GetTileWidth());
 
-            _renderer = _meteorite.GetComponent<SpriteRenderer>();
-            _animator = _meteorite.GetComponent<Animator>();
+            _meteoriteRenderer = _meteorite.GetComponent<SpriteRenderer>();
+            _animator = GetComponent<Animator>();
             this.OnTriggerEnter2DAsObservable()
-                .Where(_ => transform.position.z < 0)
                 .Select(other => other.GetComponent<BottleControllerBase>())
                 .Where(bottle => bottle && bottle.IsAttackable && !bottle.IsInvincible)
                 .Subscribe(bottle => HandleCollision(bottle.gameObject))
                 .AddTo(this);
             GamePlayDirector.Instance.GameSucceeded.Subscribe(_ => Destroy(gameObject)).AddTo(this);
-            GamePlayDirector.Instance.GameFailed.Subscribe(_ => _animator.speed = 0f);
+            GamePlayDirector.Instance.GameFailed.Subscribe(_ => _animator.speed = 0f).AddTo(this);
         }
 
         protected override void HandleCollision(GameObject other)
@@ -113,18 +106,41 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
                     throw new System.NotImplementedException("不正なギミックタイプです");
             }
 
-            var position = transform.position;
-            position = _targetPos + _startPosMargin;
-            position = new Vector2(Mathf.Min(position.x, (GameWindowController.Instance.GetGameCoreSpaceWidth() - _renderer.bounds.size.x) / 2f), Mathf.Min(position.y, (GameWindowController.Instance.GetGameCoreSpaceHeight() - _renderer.bounds.size.y) / 2f));
+            var position = _targetPos + _startPosMargin;
+            position = new Vector2(Mathf.Min(position.x, (GameWindowController.Instance.GetGameCoreSpaceWidth() - _meteoriteRenderer.bounds.size.x) / 2f), Mathf.Min(position.y, (GameWindowController.Instance.GetGameCoreSpaceHeight() - _meteoriteRenderer.bounds.size.y) / 2f));
+            _attackMoveDistance = (position - _targetPos).magnitude;
             transform.position = position;
         }
 
         public override IEnumerator Trigger()
         {
-            _renderer.enabled = true;
-            // TODO: 一定時間待機する
-            // TODO: 落下アニメーション
+            _meteoriteRenderer.enabled = true;
+            // 動き出しのアニメーション
+            _animator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_WARNING);
+            // Attackまで待つ
+            yield return new WaitUntil(() => _animator.GetCurrentAnimatorStateInfo(0).shortNameHash == _ATTACK_STATE_NAME_HASH);
+            // 落下アニメーション
+            yield return MoveToTargetPosition();
             // TODO: Crackを出す
+            Destroy(gameObject);
+        }
+
+        private IEnumerator MoveToTargetPosition()
+        {
+            // 攻撃のクリップの長さ、スタート位置、終了位置からスピードを算出
+            var attackAnimClip = _animator.runtimeAnimatorController.animationClips.Single(c => c.name == _ATTACK_ANIMATION_CLIP_NAME);
+            var attackAnimationTime = attackAnimClip.length;
+            var speed = _attackMoveDistance / attackAnimationTime;
+
+            var direction = (_targetPos - (Vector2)transform.position);
+            direction.Normalize();
+            var animationTime = 0f;
+            var startPosition = transform.position;
+            while (animationTime <= attackAnimationTime) {
+                transform.position = Vector2.Lerp(startPosition, _targetPos, animationTime / attackAnimationTime);
+                animationTime += Time.fixedDeltaTime;
+                yield return new WaitForFixedUpdate();
+            }
             yield return null;
         }
 
