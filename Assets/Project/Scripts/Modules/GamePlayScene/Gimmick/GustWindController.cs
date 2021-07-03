@@ -244,6 +244,7 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
 
             var targetBottles = bottleObjsOnTargetLine
                 .Where(go => go.GetComponent<DynamicBottleController>() != null)
+                .Where(go => go.GetComponent<DynamicBottleController>().IsMovable)
                 .Select(go => go.GetComponent<DynamicBottleController>());
 
             switch (_targetDirection) {
