@@ -44,6 +44,7 @@ namespace Treevel.Modules.GamePlayScene.Tile
             bottleHandler = new WarpTileBottleHandler(this);
             _warpTarget = transform.Find("WarpTarget").gameObject;
             _animator = GetComponent<Animator>();
+            _animator.enabled = false;
 
             // ボトルが入るアニメーション再生終了後の処理
             _animator.GetBehaviour<ObservableStateMachineTrigger>()
@@ -80,6 +81,7 @@ namespace Treevel.Modules.GamePlayScene.Tile
 
         private void OnEnable()
         {
+            GamePlayDirector.Instance.GameStart.Subscribe(_ => _animator.enabled = true).AddTo(this);
             GamePlayDirector.Instance.GameEnd.Subscribe(_ => EndProcess()).AddTo(this);
         }
 
