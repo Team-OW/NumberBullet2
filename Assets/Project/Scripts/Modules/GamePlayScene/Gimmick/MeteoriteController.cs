@@ -12,8 +12,6 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Treevel.Modules.GamePlayScene.Gimmick
 {
-    [RequireComponent(typeof(GameSpriteRendererUnifier))]
-    [RequireComponent(typeof(Collider2D))]
     public class MeteoriteController : GimmickControllerBase
     {
         /// <summary>
@@ -22,9 +20,15 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         private Vector2 _targetPos;
 
         /// <summary>
-        /// 警告のプレハブ
+        /// 目標座標からどれだけ離れた位置に出現させるか
         /// </summary>
-        [SerializeField] protected AssetReferenceGameObject _warningPrefab;
+        private Vector2 _startPosMargin;
+
+        /// <summary>
+        ///
+        /// 隕石部分innsekibubunn
+        /// </summary>
+        [SerializeField] private GameObject _meteorite;
 
         /// <summary>
         /// 速さ
@@ -34,7 +38,7 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         /// <summary>
         /// 警告オブジェクトインスタンス（ゲーム終了時片付けするためにメンバー変数として持つ）
         /// </summary>
-        private GameObject _warningObj;
+        private GameObject _crack;
 
         /// <summary>
         /// 隕石の画像の表示時間
@@ -48,35 +52,36 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
 
         private SpriteRenderer _renderer;
 
+        private Animator _animator;
+
         private void Awake()
         {
             base.Awake();
+            _startPosMargin = new Vector2(2.5f * GameWindowController.Instance.GetTileWidth(), 1.5f * GameWindowController.Instance.GetTileWidth());
 
-            _renderer = GetComponent<SpriteRenderer>();
+            _renderer = _meteorite.GetComponent<SpriteRenderer>();
+            _animator = _meteorite.GetComponent<Animator>();
             this.OnTriggerEnter2DAsObservable()
-                .Where(_ => transform.position.z >= 0)
+                .Where(_ => transform.position.z < 0)
                 .Select(other => other.GetComponent<BottleControllerBase>())
                 .Where(bottle => bottle && bottle.IsAttackable && !bottle.IsInvincible)
                 .Subscribe(bottle => HandleCollision(bottle.gameObject))
                 .AddTo(this);
-            GamePlayDirector.Instance.GameEnd.Where(_ => _warningObj != null)
-                .Subscribe(_ => _warningPrefab.ReleaseInstance(_warningObj)).AddTo(this);
+            GamePlayDirector.Instance.GameSucceeded.Subscribe(_ => Destroy(gameObject)).AddTo(this);
+            GamePlayDirector.Instance.GameFailed.Subscribe(_ => _animator.speed = 0f);
         }
 
         protected override void HandleCollision(GameObject other)
         {
-            // 衝突したオブジェクトは赤色に変える
-            gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-
-            gameObject.GetComponent<Renderer>().sortingLayerName = Constants.SortingLayerName.GIMMICK;
-
-            // 隕石を衝突したボトルに追従させる
-            gameObject.transform.SetParent(other.transform);
+            // TODO: Crackのアニメーションに遷移しないようにTriggerを起動する
         }
 
         public override void Initialize(GimmickData gimmickData)
         {
             base.Initialize(gimmickData);
+
+            // TODO: 特殊なTileを狙わないように指定する
+            // MeteoriteとAimingMeteoriteでClassを分ける
 
             switch (gimmickData.type) {
                 case EGimmickType.Meteorite:
@@ -107,56 +112,20 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
                 default:
                     throw new System.NotImplementedException("不正なギミックタイプです");
             }
-        }
 
-        private void FixedUpdate()
-        {
-            if (!_isMoving || GamePlayDirector.Instance.State != GamePlayDirector.EGameState.Playing) return;
-
-            // 奥方向に移動させる（見た目変化ない）
-            transform.Translate(Vector3.back * _speed, Space.World);
-
-            // 透明度をあげてだんだんと見えなくする
-            var deltaAlpha = Time.fixedDeltaTime / _meteoriteDisplayTime;
-            _renderer.color -= new Color(0, 0, 0, deltaAlpha);
-
-            if (transform.position.z < -1 * (_meteoriteDisplayTime / Time.fixedDeltaTime) * _speed) {
-                Destroy(gameObject);
-            }
+            var position = transform.position;
+            position = _targetPos + _startPosMargin;
+            position = new Vector2(Mathf.Min(position.x, (GameWindowController.Instance.GetGameCoreSpaceWidth() - _renderer.bounds.size.x) / 2f), Mathf.Min(position.y, (GameWindowController.Instance.GetGameCoreSpaceHeight() - _renderer.bounds.size.y) / 2f));
+            transform.position = position;
         }
 
         public override IEnumerator Trigger()
         {
-            yield return ShowWarning(_targetPos, _warningDisplayTime);
-
-            transform.position = new Vector3(_targetPos.x, _targetPos.y, _speed);
-            GetComponent<Collider2D>().enabled = true;
-            GetComponent<SpriteRenderer>().enabled = true;
-            _isMoving = true;
-        }
-
-        /// <summary>
-        /// 警告表示
-        /// </summary>
-        /// <param name="warningPos">表示する座標</param>
-        /// <param name="displayTime">表示時間</param>
-        private IEnumerator ShowWarning(Vector2 warningPos, float displayTime)
-        {
-            if (_warningObj != null) {
-                _warningPrefab.ReleaseInstance(_warningObj);
-            }
-
-            AsyncOperationHandle<GameObject> warningOp;
-            yield return warningOp = _warningPrefab.InstantiateAsync(warningPos, Quaternion.identity);
-
-            _warningObj = warningOp.Result;
-            _warningObj.GetComponent<SpriteRenderer>().sortingOrder = GetComponent<SpriteRenderer>().sortingOrder;
-            _warningObj.GetComponent<SpriteRenderer>().enabled = true;
-
-            // 警告終わるまで待つ
-            while ((displayTime -= Time.fixedDeltaTime) >= 0) yield return new WaitForFixedUpdate();
-
-            if (_warningObj != null) _warningPrefab.ReleaseInstance(_warningObj);
+            _renderer.enabled = true;
+            // TODO: 一定時間待機する
+            // TODO: 落下アニメーション
+            // TODO: Crackを出す
+            yield return null;
         }
 
         /// <summary>
