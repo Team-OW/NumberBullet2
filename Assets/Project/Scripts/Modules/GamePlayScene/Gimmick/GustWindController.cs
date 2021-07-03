@@ -185,7 +185,9 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
                 while (currTileIdx + 1 < destinationTiles.Length) {
                     var bottleOnTargetTile = BoardManager.Instance.GetBottle(destinationTiles[currTileIdx + 1]);
                     // 次のタイルがStaticBottleの場合はループ終了、そうでない場合は次のタイルへ進む
-                    if (bottleOnTargetTile && bottleOnTargetTile.GetComponent<StaticBottleController>() != null) {
+                    if (bottleOnTargetTile &&
+                        (bottleOnTargetTile.GetComponent<StaticBottleController>() != null ||
+                        !bottleOnTargetTile.GetComponent<DynamicBottleController>().IsMovable)) {
                         break;
                     } else {
                         currTileIdx++;
