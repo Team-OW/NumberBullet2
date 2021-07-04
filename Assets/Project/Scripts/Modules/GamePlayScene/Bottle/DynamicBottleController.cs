@@ -64,6 +64,7 @@ namespace Treevel.Modules.GamePlayScene.Bottle
             _flickGesture.FlickTime = 0.2f;
             Observable.FromEvent<EventHandler<EventArgs>, Tuple<object, EventArgs>>(h => (x, y) => h(Tuple.Create(x, y)), x => _flickGesture.Flicked += x, x => _flickGesture.Flicked -= x)
                 .Select(x => x.Item1 as FlickGesture)
+                .Where(_ => GamePlayDirector.Instance.State == GamePlayDirector.EGameState.Playing)
                 .Where(_ => IsMovable)
                 .Where(gesture => gesture != null && gesture.State == FlickGesture.GestureState.Recognized)
                 .Subscribe(async gesture => {
