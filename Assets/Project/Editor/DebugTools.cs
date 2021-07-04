@@ -13,16 +13,20 @@ namespace Treevel
         [MenuItem("Tools/Debug Command/Open Error Window")]
         private static void OpenErrorWindow()
         {
-            if (!EditorApplication.isPlaying) {
-                Debug.LogWarning("Only available in play mode");
-                return;
-            }
-
             var errorCodes = Enum.GetValues(typeof(EErrorCode)) as EErrorCode[];
             var rand = new System.Random();
             var errorCode = errorCodes?.ElementAt(rand.Next(errorCodes.Length)) ?? EErrorCode.UnknownError;
 
             UIManager.Instance.ShowErrorMessageAsync(errorCode).Forget();
+        }
+
+        /// <summary>
+        /// Open Error Window が実行可能かを判断する関数
+        /// </summary>
+        [MenuItem("Tools/Debug Command/Open Error Window", true)]
+        private static bool ValidateOpenErrorWindow()
+        {
+            return EditorApplication.isPlaying;
         }
     }
 }
