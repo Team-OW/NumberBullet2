@@ -64,14 +64,5 @@ namespace Treevel.Common.Entities
         MessageDlgCancelBtnText,         // メッセージダイアログーCancelボタン
         MessageDlgOkBtnRetryText,        // メッセージダイアログーリトライボタン
         MessageDlgOkBtnGiveUpText,       // メッセージダイアログー諦めるボタン
-        ErrorTextStart = 10000,          // ここからはエラーメッセージ
-        ErrorUnknown = ErrorTextStart,   // 不明なエラー
-        ErrorLoadDataFailed,             // データの読み込みが失敗しました
-        ErrorInvalidBottleAccess,        // ボトルの不正アクセスが発生しました。
-        ErrorInvalidBottleColor,         // ボトルの色が正しく設定されていません。
-        ErrorInvalidLifeValue,           // ライフの値が正しく設定されていません。
-        ErrorInvalidTileColor,           // タイルの色が正しく設定されていません。
-        ErrorInvalidGimmickData,         // ギミックデータが正しく設定されていません。
-        SaveStageRecordError,            // ステージの記録を保存することに失敗しました。
     }
 }
