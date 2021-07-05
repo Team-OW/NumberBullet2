@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &957508379597345922
 Transform:
   m_ObjectHideFlags: 0
@@ -203,6 +203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pairTile: {fileID: 0}
+  _whirlPoolEffectObject: {fileID: 145332969949921221}
 --- !u!111 &8433052318547613514
 Animation:
   m_ObjectHideFlags: 0
