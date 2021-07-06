@@ -35,10 +35,14 @@ namespace Treevel.Modules.GamePlayScene.Tile
 
             internal HolyTileBottleHandler(HolyTileController parent)
             {
+                GamePlayDirector.Instance.GameStart.Subscribe(_ => {
+                    _animator.enabled = true;
+                }).AddTo(parent);
                 GamePlayDirector.Instance.GameEnd.Subscribe(_ => {
                     _animator.speed = 0;
                 }).AddTo(parent);
                 _animator = parent.GetComponent<Animator>();
+                _animator.enabled = false;
             }
 
             public override void OnGameStart(GameObject bottle)
