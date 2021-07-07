@@ -28,7 +28,17 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         /// 攻撃するために移動する距離
         /// </summary>
         private float _attackMoveDistance;
-        
+
+        /// <summary>
+        /// 隕石部分
+        /// </summary>
+        [SerializeField] private GameObject _meteorite;
+
+        /// <summary>
+        /// 隕石のSpriteRenderer
+        /// </summary>
+        private SpriteRenderer _meteoriteRenderer;
+
         /// <summary>
         /// 隕石のAnimator
         /// </summary>
@@ -43,6 +53,7 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             base.Awake();
             _startPosMargin = new Vector2(2.5f * GameWindowController.Instance.GetTileWidth(), 1.5f * GameWindowController.Instance.GetTileWidth());
 
+            _meteoriteRenderer = _meteorite.GetComponent<SpriteRenderer>();
             _meteoriteAnimator = GetComponent<Animator>();
 
             GamePlayDirector.Instance.GameSucceeded.Subscribe(_ => Destroy(gameObject)).AddTo(this);

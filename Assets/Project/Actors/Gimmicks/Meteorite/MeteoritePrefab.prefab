@@ -48,7 +48,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _warningDisplayTime: 1
   _meteorite: {fileID: 2984137241247551036}
-  _crater: {fileID: 709049755694195696}
 --- !u!95 &671507387068497904
 Animator:
   serializedVersion: 3
