@@ -28,36 +28,11 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         /// 攻撃するために移動する距離
         /// </summary>
         private float _attackMoveDistance;
-
-        /// <summary>
-        /// 隕石部分
-        /// </summary>
-        [SerializeField] private GameObject _meteorite;
-
-        /// <summary>
-        /// 隕石のSpriteRenderer
-        /// </summary>
-        private SpriteRenderer _meteoriteRenderer;
-
+        
         /// <summary>
         /// 隕石のAnimator
         /// </summary>
         private Animator _meteoriteAnimator;
-
-        /// <summary>
-        /// 隕石の跡部分
-        /// </summary>
-        [SerializeField] private GameObject _crater;
-
-        /// <summary>
-        /// 隕石跡のSpriteRenderer
-        /// </summary>
-        private SpriteRenderer _craterRenderer;
-
-        /// <summary>
-        /// 隕石跡のAnimator
-        /// </summary>
-        private Animator _craterAnimator;
 
         private const string _ANIMATOR_PARAM_TRIGGER_WARNING = "Warning";
         private const string _ATTACK_ANIMATION_CLIP_NAME = "Meteorite@attack";
@@ -68,16 +43,10 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             base.Awake();
             _startPosMargin = new Vector2(2.5f * GameWindowController.Instance.GetTileWidth(), 1.5f * GameWindowController.Instance.GetTileWidth());
 
-            _meteoriteRenderer = _meteorite.GetComponent<SpriteRenderer>();
             _meteoriteAnimator = GetComponent<Animator>();
-            _craterRenderer = _crater.GetComponent<SpriteRenderer>();
-            _craterAnimator = _crater.GetComponent<Animator>();
 
             GamePlayDirector.Instance.GameSucceeded.Subscribe(_ => Destroy(gameObject)).AddTo(this);
-            GamePlayDirector.Instance.GameFailed.Subscribe(_ => {
-                _meteoriteAnimator.speed = 0f;
-                _craterAnimator.speed = 0f;
-            }).AddTo(this);
+            GamePlayDirector.Instance.GameFailed.Subscribe(_ => _meteoriteAnimator.speed = 0f).AddTo(this);
         }
 
         public override void Initialize(GimmickData gimmickData)
