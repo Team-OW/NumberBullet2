@@ -30,19 +30,34 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         private float _attackMoveDistance;
 
         /// <summary>
-        ///
-        /// 隕石部分innsekibubunn
+        /// 隕石部分
         /// </summary>
         [SerializeField] private GameObject _meteorite;
 
         /// <summary>
-        /// 警告オブジェクトインスタンス（ゲーム終了時片付けするためにメンバー変数として持つ）
+        /// 隕石のSpriteRenderer
         /// </summary>
-        private GameObject _crack;
-
         private SpriteRenderer _meteoriteRenderer;
 
-        private Animator _animator;
+        /// <summary>
+        /// 隕石のAnimator
+        /// </summary>
+        private Animator _meteoriteAnimator;
+
+        /// <summary>
+        /// 隕石の跡部分
+        /// </summary>
+        [SerializeField] private GameObject _crater;
+
+        /// <summary>
+        /// 隕石跡のSpriteRenderer
+        /// </summary>
+        private SpriteRenderer _craterRenderer;
+
+        /// <summary>
+        /// 隕石跡のAnimator
+        /// </summary>
+        private Animator _craterAnimator;
 
         private const string _ANIMATOR_PARAM_TRIGGER_WARNING = "Warning";
         private const string _ATTACK_ANIMATION_CLIP_NAME = "Meteorite@attack";
@@ -54,19 +69,15 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             _startPosMargin = new Vector2(2.5f * GameWindowController.Instance.GetTileWidth(), 1.5f * GameWindowController.Instance.GetTileWidth());
 
             _meteoriteRenderer = _meteorite.GetComponent<SpriteRenderer>();
-            _animator = GetComponent<Animator>();
-            this.OnTriggerEnter2DAsObservable()
-                .Select(other => other.GetComponent<BottleControllerBase>())
-                .Where(bottle => bottle && bottle.IsAttackable && !bottle.IsInvincible)
-                .Subscribe(bottle => HandleCollision(bottle.gameObject))
-                .AddTo(this);
-            GamePlayDirector.Instance.GameSucceeded.Subscribe(_ => Destroy(gameObject)).AddTo(this);
-            GamePlayDirector.Instance.GameFailed.Subscribe(_ => _animator.speed = 0f).AddTo(this);
-        }
+            _meteoriteAnimator = GetComponent<Animator>();
+            _craterRenderer = _crater.GetComponent<SpriteRenderer>();
+            _craterAnimator = _crater.GetComponent<Animator>();
 
-        protected override void HandleCollision(GameObject other)
-        {
-            // TODO: Crackのアニメーションに遷移しないようにTriggerを起動する
+            GamePlayDirector.Instance.GameSucceeded.Subscribe(_ => Destroy(gameObject)).AddTo(this);
+            GamePlayDirector.Instance.GameFailed.Subscribe(_ => {
+                _meteoriteAnimator.speed = 0f;
+                _craterAnimator.speed = 0f;
+            }).AddTo(this);
         }
 
         public override void Initialize(GimmickData gimmickData)
@@ -74,8 +85,6 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             base.Initialize(gimmickData);
 
             // TODO: 特殊なTileを狙わないように指定する
-            // MeteoriteとAimingMeteoriteでClassを分ける
-
             switch (gimmickData.type) {
                 case EGimmickType.Meteorite:
                     if (gimmickData.isRandom) {
@@ -116,19 +125,19 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         {
             _meteoriteRenderer.enabled = true;
             // 動き出しのアニメーション
-            _animator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_WARNING);
+            _meteoriteAnimator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_WARNING);
             // Attackまで待つ
-            yield return new WaitUntil(() => _animator.GetCurrentAnimatorStateInfo(0).shortNameHash == _ATTACK_STATE_NAME_HASH);
+            yield return new WaitUntil(() => _meteoriteAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash == _ATTACK_STATE_NAME_HASH);
             // 落下アニメーション
             yield return MoveToTargetPosition();
-            // TODO: Crackを出す
+            // TODO: Craterを出す
             Destroy(gameObject);
         }
 
         private IEnumerator MoveToTargetPosition()
         {
             // 攻撃のクリップの長さ、スタート位置、終了位置からスピードを算出
-            var attackAnimClip = _animator.runtimeAnimatorController.animationClips.Single(c => c.name == _ATTACK_ANIMATION_CLIP_NAME);
+            var attackAnimClip = _meteoriteAnimator.runtimeAnimatorController.animationClips.Single(c => c.name == _ATTACK_ANIMATION_CLIP_NAME);
             var attackAnimationTime = attackAnimClip.length;
             var speed = _attackMoveDistance / attackAnimationTime;
 
