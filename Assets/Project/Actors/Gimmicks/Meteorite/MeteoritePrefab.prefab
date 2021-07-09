@@ -48,6 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _warningDisplayTime: 1
   _meteorite: {fileID: 2984137241247551036}
+  _meteoriteShadowPrefab: {fileID: 3057290699121607612, guid: 33aae23c02bd1492f8788a0271a04261,
+    type: 3}
 --- !u!95 &671507387068497904
 Animator:
   serializedVersion: 3

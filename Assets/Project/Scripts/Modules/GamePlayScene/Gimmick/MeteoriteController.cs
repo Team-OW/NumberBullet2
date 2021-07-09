@@ -44,6 +44,16 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         /// </summary>
         private Animator _meteoriteAnimator;
 
+        /// <summary>
+        /// 隕石の影のPrefab
+        /// </summary>
+        [SerializeField] private GameObject _meteoriteShadowPrefab;
+
+        /// <summary>
+        /// 隕石の影
+        /// </summary>
+        private GameObject _shadow;
+
         private const string _ANIMATOR_PARAM_TRIGGER_WARNING = "Warning";
         private const string _ATTACK_ANIMATION_CLIP_NAME = "Meteorite@attack";
         private static readonly int _ATTACK_STATE_NAME_HASH = Animator.StringToHash("Meteorite@attack");
@@ -56,8 +66,14 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             _meteoriteRenderer = _meteorite.GetComponent<SpriteRenderer>();
             _meteoriteAnimator = GetComponent<Animator>();
 
-            GamePlayDirector.Instance.GameSucceeded.Subscribe(_ => Destroy(gameObject)).AddTo(this);
-            GamePlayDirector.Instance.GameFailed.Subscribe(_ => _meteoriteAnimator.speed = 0f).AddTo(this);
+            GamePlayDirector.Instance.GameSucceeded.Subscribe(_ => {
+                if (_shadow != null) Destroy(_shadow);
+                Destroy(gameObject);
+            }).AddTo(this);
+            GamePlayDirector.Instance.GameFailed.Subscribe(_ => {
+                if (_shadow != null) _shadow.GetComponent<Animator>().speed = 0;
+                _meteoriteAnimator.speed = 0f;
+            }).AddTo(this);
         }
 
         public override void Initialize(GimmickData gimmickData)
@@ -103,14 +119,19 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
 
         public override IEnumerator Trigger()
         {
+            // 影の発生
+            _shadow = Instantiate(_meteoriteShadowPrefab);
+            _shadow.transform.position = _targetPos;
+
             _meteoriteRenderer.enabled = true;
             // 動き出しのアニメーション
             _meteoriteAnimator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_WARNING);
+            _shadow.GetComponent<Animator>().SetTrigger(_ANIMATOR_PARAM_TRIGGER_WARNING);
             // Attackまで待つ
             yield return new WaitUntil(() => _meteoriteAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash == _ATTACK_STATE_NAME_HASH);
             // 落下アニメーション
             yield return MoveToTargetPosition();
-            // TODO: Craterを出す
+            Destroy(_shadow);
             Destroy(gameObject);
         }
 
