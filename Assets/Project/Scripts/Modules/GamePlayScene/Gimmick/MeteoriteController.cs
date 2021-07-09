@@ -45,6 +45,11 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         private Animator _meteoriteAnimator;
 
         /// <summary>
+        /// 隕石の穴部分のSpriteRenderer
+        /// </summary>
+        [SerializeField] private SpriteRenderer _meteoriteHoleRenderer;
+
+        /// <summary>
         /// 隕石の影のPrefab
         /// </summary>
         [SerializeField] private GameObject _meteoriteShadowPrefab;
@@ -55,8 +60,10 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         private GameObject _shadow;
 
         private const string _ANIMATOR_PARAM_TRIGGER_WARNING = "Warning";
+        private const string _ANIMATOR_PARAM_TRIGGER_Hit = "Hit";
         private const string _ATTACK_ANIMATION_CLIP_NAME = "Meteorite@attack";
         private static readonly int _ATTACK_STATE_NAME_HASH = Animator.StringToHash("Meteorite@attack");
+        private static readonly int _REMAINING_STATE_NAME_HASH = Animator.StringToHash("Meteorite@remaining");
 
         private void Awake()
         {
@@ -65,6 +72,14 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
 
             _meteoriteRenderer = _meteorite.GetComponent<SpriteRenderer>();
             _meteoriteAnimator = GetComponent<Animator>();
+
+            this.OnTriggerEnter2DAsObservable()
+                .Select(other => other.GetComponent<BottleControllerBase>())
+                .Where(bottle => bottle != null)
+                .Where(bottle => bottle.IsAttackable)
+                .Where(bottle => !bottle.IsInvincible)
+                .Subscribe(bottle => HandleCollision(bottle.gameObject))
+                .AddTo(this);
 
             GamePlayDirector.Instance.GameSucceeded.Subscribe(_ => {
                 if (_shadow != null) Destroy(_shadow);
@@ -76,9 +91,18 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             }).AddTo(this);
         }
 
+        protected override void HandleCollision(GameObject other)
+        {
+            _meteoriteAnimator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_Hit);
+            Destroy(_shadow);
+        }
+
         public override void Initialize(GimmickData gimmickData)
         {
             base.Initialize(gimmickData);
+            // 描画順序の設定
+            _meteoriteRenderer.sortingOrder += 2;
+            _meteoriteHoleRenderer.sortingOrder += 1;
 
             // TODO: 特殊なTileを狙わないように指定する
             switch (gimmickData.type) {
@@ -123,7 +147,6 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             _shadow = Instantiate(_meteoriteShadowPrefab);
             _shadow.transform.position = _targetPos;
 
-            _meteoriteRenderer.enabled = true;
             // 動き出しのアニメーション
             _meteoriteAnimator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_WARNING);
             _shadow.GetComponent<Animator>().SetTrigger(_ANIMATOR_PARAM_TRIGGER_WARNING);
@@ -131,6 +154,11 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             yield return new WaitUntil(() => _meteoriteAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash == _ATTACK_STATE_NAME_HASH);
             // 落下アニメーション
             yield return MoveToTargetPosition();
+            // 落下後、Bottleの奥に描画する
+            _meteoriteRenderer.sortingLayerName = Constants.SortingLayerName.METEORITE;
+            // 隕石の跡が消えるまで待つ
+            yield return new WaitUntil(() => _meteoriteAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash == _REMAINING_STATE_NAME_HASH);
+            yield return new WaitUntil(() => _meteoriteAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash != _REMAINING_STATE_NAME_HASH);
             Destroy(_shadow);
             Destroy(gameObject);
         }
@@ -151,7 +179,7 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
                 animationTime += Time.fixedDeltaTime;
                 yield return new WaitForFixedUpdate();
             }
-            yield return null;
+            transform.position =  _targetPos;
         }
 
         /// <summary>

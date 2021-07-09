@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _warningDisplayTime: 1
   _meteorite: {fileID: 2984137241247551036}
+  _meteoriteHoleRenderer: {fileID: 2718242630781108439}
   _meteoriteShadowPrefab: {fileID: 3057290699121607612, guid: 33aae23c02bd1492f8788a0271a04261,
     type: 3}
 --- !u!95 &671507387068497904
@@ -258,7 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2785107324274521073}
   - component: {fileID: 2718242630781108439}
-  - component: {fileID: 3512942793611464709}
+  - component: {fileID: 8529849362461137137}
   m_Layer: 8
   m_Name: Hole
   m_TagString: Gimmick
@@ -332,7 +333,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &3512942793611464709
+--- !u!114 &8529849362461137137
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -341,7 +342,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6650668119766886201}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5753871e3c8ca4feca41fd57ba343e13, type: 3}
+  m_Script: {fileID: 11500000, guid: c0c48ee6b0648441da1a1c58aef83f5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   RatioToWindowWidth: 0.22
@@ -356,7 +357,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2577749697896582214}
   - component: {fileID: 6584665562472565310}
-  - component: {fileID: 1877813735596553119}
+  - component: {fileID: 6044166709983483667}
   m_Layer: 8
   m_Name: Crack
   m_TagString: Gimmick
@@ -430,7 +431,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1877813735596553119
+--- !u!114 &6044166709983483667
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -439,7 +440,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8135677423919644982}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5753871e3c8ca4feca41fd57ba343e13, type: 3}
+  m_Script: {fileID: 11500000, guid: c0c48ee6b0648441da1a1c58aef83f5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   RatioToWindowWidth: 0.22
