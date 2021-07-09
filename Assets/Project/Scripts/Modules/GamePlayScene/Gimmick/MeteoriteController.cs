@@ -60,7 +60,6 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         private GameObject _shadow;
 
         private const string _ANIMATOR_PARAM_TRIGGER_WARNING = "Warning";
-        private const string _ANIMATOR_PARAM_TRIGGER_Hit = "Hit";
         private const string _ATTACK_ANIMATION_CLIP_NAME = "Meteorite@attack";
         private static readonly int _ATTACK_STATE_NAME_HASH = Animator.StringToHash("Meteorite@attack");
         private static readonly int _REMAINING_STATE_NAME_HASH = Animator.StringToHash("Meteorite@remaining");
@@ -89,12 +88,6 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
                 if (_shadow != null) _shadow.GetComponent<Animator>().speed = 0;
                 _meteoriteAnimator.speed = 0f;
             }).AddTo(this);
-        }
-
-        protected override void HandleCollision(GameObject other)
-        {
-            _meteoriteAnimator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_Hit);
-            Destroy(_shadow);
         }
 
         public override void Initialize(GimmickData gimmickData)
