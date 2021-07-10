@@ -150,6 +150,13 @@ MonoBehaviour:
     - Gimmick
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
+  - m_GUID: 33aae23c02bd1492f8788a0271a04261
+    m_Address: MeteoriteShadowPrefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Gimmick
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 86a9d3876e9534cd69e69f31dd11bb5f, type: 2}
   m_SchemaSet:

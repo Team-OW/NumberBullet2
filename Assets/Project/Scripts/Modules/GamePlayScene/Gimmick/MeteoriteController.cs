@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Treevel.Common.Entities;
 using Treevel.Common.Entities.GameDatas;
+using Treevel.Common.Managers;
 using Treevel.Common.Utils;
 using Treevel.Modules.GamePlayScene.Bottle;
 using UniRx;
@@ -48,11 +50,6 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         /// 隕石の穴部分のSpriteRenderer
         /// </summary>
         [SerializeField] private SpriteRenderer _meteoriteHoleRenderer;
-
-        /// <summary>
-        /// 隕石の影のPrefab
-        /// </summary>
-        [SerializeField] private GameObject _meteoriteShadowPrefab;
 
         /// <summary>
         /// 隕石の影
@@ -137,7 +134,9 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         public override IEnumerator Trigger()
         {
             // 影の発生
-            _shadow = Instantiate(_meteoriteShadowPrefab);
+            AsyncOperationHandle<GameObject> shadowOp;
+            yield return shadowOp = AddressableAssetManager.Instantiate(Constants.Address.METEORITE_SHADOW_PREFAB);
+            _shadow = shadowOp.Result;
             _shadow.transform.position = _targetPos;
 
             // 動き出しのアニメーション
