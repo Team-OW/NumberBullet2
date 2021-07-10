@@ -133,6 +133,7 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
 
         public override IEnumerator Trigger()
         {
+            SoundManager.Instance.PlaySE(ESEKey.Gimmick_Meteorite_Drop);
             // 影の発生
             AsyncOperationHandle<GameObject> shadowOp;
             yield return shadowOp = AddressableAssetManager.Instantiate(Constants.Address.METEORITE_SHADOW_PREFAB);
@@ -144,8 +145,11 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             _shadow.GetComponent<Animator>().SetTrigger(_ANIMATOR_PARAM_TRIGGER_WARNING);
             // Attackまで待つ
             yield return new WaitUntil(() => _meteoriteAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash == _ATTACK_STATE_NAME_HASH);
+
             // 落下アニメーション
             yield return MoveToTargetPosition();
+
+            SoundManager.Instance.PlaySE(ESEKey.Gimmick_Meteorite_Collide);
             // 落下後、Bottleの奥に描画する
             _meteoriteRenderer.sortingLayerName = Constants.SortingLayerName.METEORITE;
             // 隕石の跡が消えるまで待つ
