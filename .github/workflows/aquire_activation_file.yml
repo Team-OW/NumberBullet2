@@ -19,6 +19,6 @@ jobs:
       - name: Expose as artifact
         uses: actions/upload-artifact@v1
         with:
-          name: Unity_v${{ matrix.unity }}.alf
-          path: ./Unity_v${{ matrix.unity }}.alf
+          name: Unity_v${{ matrix.unityVersion }}.alf
+          path: ./Unity_v${{ matrix.unityVersion }}.alf
   
