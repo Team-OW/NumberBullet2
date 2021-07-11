@@ -24,36 +24,36 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         /// <summary>
         /// OnEnterで購読したボトルとOnExitで購読解除するボトルのDisposableの対応関係を保持するための辞書
         /// </summary>
-        private readonly Dictionary<BottleControllerBase, IDisposable> _invincibleAfterDamagedExpiredDisposables = new Dictionary<BottleControllerBase, IDisposable>();
+        private readonly Dictionary<BottleControllerBase, IDisposable> _invincibleExpiredDisposables = new Dictionary<BottleControllerBase, IDisposable>();
 
         protected void Awake()
         {
             // 衝突イベントを処理する
             this.OnTriggerEnter2DAsObservable()
                 .Select(other => other.GetComponent<BottleControllerBase>())
-                .Where(bottle => bottle && bottle.IsInvincibleAfterDamaged)
+                .Where(bottle => bottle && bottle.IsInvincible)
                 .Subscribe(bottle => {
-                    var disposable = bottle.OnInvincibleAfterDamagedExpired.Subscribe(bottleObject => {
+                    var disposable = bottle.onInvincibleExpiredSubject.Subscribe(bottleObject => {
                         HandleCollision(bottleObject);
                         bottleObject.GetComponent<BottleControllerBase>().HandleCollision(GetComponent<Collider2D>());
                     }).AddTo(this);
-                    _invincibleAfterDamagedExpiredDisposables.Add(bottle, disposable);
+                    _invincibleExpiredDisposables.Add(bottle, disposable);
                 }).AddTo(this);
 
             this.OnTriggerExit2DAsObservable()
                 .Select(other => other.GetComponent<BottleControllerBase>())
-                .Where(bottle => bottle && _invincibleAfterDamagedExpiredDisposables.ContainsKey(bottle))
+                .Where(bottle => bottle && _invincibleExpiredDisposables.ContainsKey(bottle))
                 .Subscribe(bottle => {
-                    _invincibleAfterDamagedExpiredDisposables[bottle].Dispose();
-                    _invincibleAfterDamagedExpiredDisposables.Remove(bottle);
+                    _invincibleExpiredDisposables[bottle].Dispose();
+                    _invincibleExpiredDisposables.Remove(bottle);
                 }).AddTo(this);
 
             GamePlayDirector.Instance.GameEnd.Subscribe(_ => {
-                foreach (var disposable in _invincibleAfterDamagedExpiredDisposables) {
+                foreach (var disposable in _invincibleExpiredDisposables) {
                     disposable.Value.Dispose();
                 }
 
-                _invincibleAfterDamagedExpiredDisposables.Clear();
+                _invincibleExpiredDisposables.Clear();
             });
         }
 

@@ -1,4 +1,7 @@
 enum,JP,EN
+FooterHome,ホーム,Home
+FooterRecord,記録,Record
+FooterOthers,その他,Others
 SettingsTitle,設定,Settings
 SettingsReset,リセット,Reset
 SettingsVibration,振動,Vibration
@@ -32,16 +35,8 @@ GamePauseQuit,諦める,GiveUp
 GameBack,戻る,Stage Menu
 Error,エラー,ERROR
 Downloading,ダウンロード中...,Downloading...
-ErrorUnknown,不明なエラー,Unknwon Error
 ReturnToTitle,タイトルに戻る,Return to title
-ErrorLoadDataFailed,データの読み込みが失敗しました。,Failed to load data
 StartGame,スタート！,Tap to Start
-ErrorInvalidBottleAccess,ボトルの不正アクセスが発生しました。,Invalid bottle access.
-ErrorInvalidBottleColor,ボトルの色が正しく設定されていません。,Invalid bottle color.
-ErrorInvalidLifeValue,ライフの値が正しく設定されいません。,Invalid life value.
-ErrorInvalidTileColor,タイルの色が正しく設定されていません。,Invalid tile color.
-ErrorInvalidGimmickData,ギミックデータが正しく設定されていません。。,Invalid gimmick data.
-SaveStageRecordError,ステージの記録を保存することに失敗しました,Failed to save stage record.
 RecordShareButton,共有,Share
 RecordToIndividualButton,個別記録へ,Individual
 RecordToGeneralButton,総合記録へ,General

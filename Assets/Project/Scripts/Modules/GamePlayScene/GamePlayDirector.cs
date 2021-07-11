@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using GoogleMobileAds.Api;
 using Treevel.Common.Attributes;
@@ -29,7 +30,7 @@ namespace Treevel.Modules.GamePlayScene
 
         private const string _STAGE_NUMBER_TEXT_NAME = "StageNumberText";
         private const string _TIMER_TEXT_NAME = "TimerText";
-        private const string _SUCCESS_POPUP_NAME = "SuccessPopup";
+        private const string _SUCCESS_PANEL_NAME = "SuccessPanel";
         private const string _FAILURE_POPUP_NAME = "FailurePopup";
 
         [SerializeField] private GameObject _tutorialWindow;
@@ -273,20 +274,6 @@ namespace Treevel.Modules.GamePlayScene
         }
 
         /// <summary>
-        /// ゲームがクリアしているかをチェックする
-        /// </summary>
-        public void CheckClear()
-        {
-            if (!StageGenerator.CreatedFinished) return;
-
-            var bottles = FindObjectsOfType<GoalBottleController>();
-            if (bottles.Any(bottle => bottle.IsSuccess() == false)) return;
-
-            // 全ての成功判定が付くボトルが成功の場合，成功状態に遷移
-            Dispatch(EGameState.Success);
-        }
-
-        /// <summary>
         /// ゲームの状態を変更する
         /// </summary>
         /// <param name="nextState"> 変更したい状態 </param>
@@ -332,6 +319,12 @@ namespace Treevel.Modules.GamePlayScene
             var gimmicks = GameObject.FindGameObjectsWithTag(Constants.TagName.GIMMICK);
             foreach (var gimmick in gimmicks) {
                 DestroyImmediate(gimmick);
+            }
+
+            // ギミックの警告を削除
+            var gimmickWarnings = GameObject.FindGameObjectsWithTag(Constants.TagName.GIMMICK_WARNING);
+            foreach (var gimmickWarning in gimmickWarnings) {
+                DestroyImmediate(gimmickWarning);
             }
 
             // タイルを削除
@@ -507,13 +500,19 @@ namespace Treevel.Modules.GamePlayScene
             public SuccessState(GamePlayDirector caller)
             {
                 // 成功ポップアップ設定
-                _successPopup = GameObject.Find(_SUCCESS_POPUP_NAME);
+                _successPopup = GameObject.Find(_SUCCESS_PANEL_NAME);
                 _successPopup.SetActive(false);
             }
 
             public override async void OnEnter(StateBase from = null)
             {
                 Instance._stageRecord.Succeed();
+
+                SoundManager.Instance.PlaySE(ESEKey.GamePlay_Success);
+
+                // 成功イベント
+                Instance._gameSucceededSubject.OnNext(Unit.Default);
+
                 try {
                     await StageRecordService.Instance.SaveAsync(treeId, stageNumber, Instance._stageRecord);
                 } catch {
@@ -531,13 +530,11 @@ namespace Treevel.Modules.GamePlayScene
                         false);
                 }
 
-                SoundManager.Instance.PlaySE(ESEKey.GamePlay_Success);
-
+                // 成功盤面を一定時間表示
+                // TODO: アニメーションの終了を待つ
+                await Task.Delay(500);
                 // 成功ポップアップ表示
                 _successPopup.SetActive(true);
-
-                // 成功イベント
-                Instance._gameSucceededSubject.OnNext(Unit.Default);
             }
 
             public override void OnExit(StateBase to)
@@ -564,21 +561,30 @@ namespace Treevel.Modules.GamePlayScene
             {
                 Instance._stageRecord.Fail();
                 Instance._stageRecord.failureReasonNum.Increment(Instance.failureReason);
+                
+                // 通常の失敗時
+                if (from is PlayingState) {
+                    // 失敗SE
+                    SoundManager.Instance.PlaySERandom(new[] { ESEKey.GamePlay_Failed_1, ESEKey.GamePlay_Failed_2 });
+
+                    // 失敗イベント
+                    Instance._gameFailedSubject.OnNext(Unit.Default);
+                }
+
                 await StageRecordService.Instance.SaveAsync(treeId, stageNumber, Instance._stageRecord);
+
+                if (from is PlayingState) {
+                    // 失敗盤面を一定時間表示
+                    // TODO: アニメーションの終了を待つ
+                    await Task.Delay(500);
+                    // 失敗ポップアップを表示
+                    _failurePopup.SetActive(true);
+                }
 
                 // Pausingから来たらステージ選択画面へ
                 if (from is PausingState) {
                     // StageSelectSceneに戻る
                     AddressableAssetManager.LoadScene(seasonId.GetSceneName());
-                } else {
-                    // 失敗SE
-                    SoundManager.Instance.PlaySERandom(new[] { ESEKey.GamePlay_Failed_1, ESEKey.GamePlay_Failed_2 });
-
-                    // 失敗ポップアップを表示
-                    _failurePopup.SetActive(true);
-
-                    // 失敗イベント
-                    Instance._gameFailedSubject.OnNext(Unit.Default);
                 }
             }
 

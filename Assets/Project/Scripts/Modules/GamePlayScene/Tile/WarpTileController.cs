@@ -17,6 +17,11 @@ namespace Treevel.Modules.GamePlayScene.Tile
         [SerializeField, NonEditable] private GameObject _pairTile;
 
         /// <summary>
+        /// 渦巻エフェクトオブジェクト
+        /// </summary>
+        [SerializeField] private GameObject _whirlPoolEffectObject;
+
+        /// <summary>
         /// ワープするボトルをアタッチするオブジェクト
         /// </summary>
         private GameObject _warpTarget;
@@ -44,6 +49,7 @@ namespace Treevel.Modules.GamePlayScene.Tile
             bottleHandler = new WarpTileBottleHandler(this);
             _warpTarget = transform.Find("WarpTarget").gameObject;
             _animator = GetComponent<Animator>();
+            _animator.enabled = false;
 
             // ボトルが入るアニメーション再生終了後の処理
             _animator.GetBehaviour<ObservableStateMachineTrigger>()
@@ -76,10 +82,12 @@ namespace Treevel.Modules.GamePlayScene.Tile
             name = Constants.TileName.WARP_TILE;
             #endif
             _pairTile = pairTile;
-        }
 
-        private void OnEnable()
-        {
+            GamePlayDirector.Instance.StagePrepared.Subscribe(_ => {
+                // 渦巻表示
+                _whirlPoolEffectObject.SetActive(true);
+            }).AddTo(this);
+            GamePlayDirector.Instance.GameStart.Subscribe(_ => _animator.enabled = true).AddTo(this);
             GamePlayDirector.Instance.GameEnd.Subscribe(_ => EndProcess()).AddTo(this);
         }
 

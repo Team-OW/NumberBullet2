@@ -72,10 +72,9 @@ namespace Treevel.Modules.GamePlayScene.Bottle
         public bool IsInvincible => IsInvincibleAfterDamaged || isInvincibleByHoly.Value;
 
         /// <summary>
-        /// ギミックに当たった後の無敵時間効果が消えるとき発火するイベント
+        /// 無敵時間効果が消えるとき発火するイベント
         /// </summary>
-        private readonly Subject<GameObject> _onInvincibleAfterDamagedExpiredSubject = new Subject<GameObject>();
-        public IObservable<GameObject> OnInvincibleAfterDamagedExpired => _onInvincibleAfterDamagedExpiredSubject;
+        public readonly Subject<GameObject> onInvincibleExpiredSubject = new Subject<GameObject>();
 
         protected virtual void Awake()
         {
@@ -93,7 +92,7 @@ namespace Treevel.Modules.GamePlayScene.Bottle
                 .Delay(TimeSpan.FromSeconds(_INVINCIBLE_AFTER_DAMAGED_INTERVAL))
                 .Subscribe(_ => {
                     IsInvincibleAfterDamaged = false;
-                    _onInvincibleAfterDamagedExpiredSubject.OnNext(gameObject);
+                    onInvincibleExpiredSubject.OnNext(gameObject);
                 })
                 .AddTo(this);
         }
