@@ -3,7 +3,11 @@ on:
   workflow_dispatch: {}
 jobs:
   activation:
-    name: Request manual activation file 🔑
+    name: Request manual activation file 🔑 for ${{ matrix.unityVersion }}
+    strategy:
+      matrix:
+        unityVersion:
+          - 2021.1.2f1
     runs-on: ubuntu-latest
     container:
       # with linux-il2cpp. image from https://hub.docker.com/r/gableroux/unity3d/tags
