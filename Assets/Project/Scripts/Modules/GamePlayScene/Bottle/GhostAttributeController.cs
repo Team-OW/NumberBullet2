@@ -7,14 +7,14 @@ using UnityEngine;
 
 namespace Treevel.Modules.GamePlayScene.Bottle
 {
-    public class SelfishAttributeController : BottleAttributeControllerBase
+    public class GhostAttributeController : BottleAttributeControllerBase
     {
         private DynamicBottleController _bottleController;
 
         private Animator _bottleAnimator;
-        private static readonly int _ANIMATOR_PARAM_TRIGGER_BE_SELFISH_IDLE = Animator.StringToHash("BeSelfishIdle");
-        private static readonly int _ANIMATOR_PARAM_TRIGGER_BE_SELFISH_ACTION = Animator.StringToHash("BeSelfishAction");
-        private static readonly int _ANIMATOR_PARAM_FLOAT_SPEED = Animator.StringToHash("SelfishSpeed");
+        private static readonly int _ANIMATOR_PARAM_TRIGGER_BE_GHOST_IDLE = Animator.StringToHash("BeGhostIdle");
+        private static readonly int _ANIMATOR_PARAM_TRIGGER_BE_GHOST_ACTION = Animator.StringToHash("BeGhostAction");
+        private static readonly int _ANIMATOR_PARAM_FLOAT_SPEED = Animator.StringToHash("GhostSpeed");
 
         protected override void Awake()
         {
@@ -22,15 +22,15 @@ namespace Treevel.Modules.GamePlayScene.Bottle
             GamePlayDirector.Instance.StagePrepared.Subscribe(_ => spriteRenderer.enabled = true).AddTo(compositeDisposableOnGameEnd, this);
             GamePlayDirector.Instance.GameStart.Subscribe(_ => {
                 animator.enabled = true;
-                animator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_SELFISH_ACTION);
-                _bottleAnimator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_SELFISH_ACTION);
+                animator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_GHOST_ACTION);
+                _bottleAnimator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_GHOST_ACTION);
             }).AddTo(compositeDisposableOnGameEnd, this);
             GamePlayDirector.Instance.GameEnd.Subscribe(_ => {
                 animator.enabled = false;
                 _bottleAnimator.SetFloat(_ANIMATOR_PARAM_FLOAT_SPEED, 0f);
             }).AddTo(this);
             // 描画順序の設定
-            spriteRenderer.sortingOrder = EBottleAttributeType.Selfish.GetOrderInLayer();
+            spriteRenderer.sortingOrder = EBottleAttributeType.Ghost.GetOrderInLayer();
         }
 
         public void Initialize(DynamicBottleController bottleController)
@@ -115,22 +115,22 @@ namespace Treevel.Modules.GamePlayScene.Bottle
         }
 
         /// <summary>
-        /// Selfishアニメーションを終了する
+        /// Ghostアニメーションを終了する
         /// </summary>
         private void QuitAnimation()
         {
-            animator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_SELFISH_IDLE);
-            _bottleAnimator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_SELFISH_IDLE);
+            animator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_GHOST_IDLE);
+            _bottleAnimator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_GHOST_IDLE);
         }
 
         /// <summary>
-        /// Selfishアニメーションを最初から開始する
+        /// Ghostアニメーションを最初から開始する
         /// </summary>
         private void RestartAnimation()
         {
-            animator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_SELFISH_ACTION);
+            animator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_GHOST_ACTION);
             animator.SetFloat(_ANIMATOR_PARAM_FLOAT_SPEED, 1f);
-            _bottleAnimator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_SELFISH_ACTION);
+            _bottleAnimator.SetTrigger(_ANIMATOR_PARAM_TRIGGER_BE_GHOST_ACTION);
             _bottleAnimator.SetFloat(_ANIMATOR_PARAM_FLOAT_SPEED, 1f);
         }
     }

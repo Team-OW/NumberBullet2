@@ -4,7 +4,7 @@ namespace Treevel.Common.Entities
     {
         Dark,
         Reverse,
-        Selfish,
+        Ghost,
         Life,
     }
 

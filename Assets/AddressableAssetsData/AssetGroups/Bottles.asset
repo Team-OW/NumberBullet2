@@ -62,12 +62,14 @@ MonoBehaviour:
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
   - m_GUID: 4c4af0bb603454198915ffaacebff62f
-    m_Address: SelfishAttributePrefab
+    m_Address: GhostAttributePrefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - Bottle
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
+    m_MainAsset: {fileID: 6904518085309977564, guid: 4c4af0bb603454198915ffaacebff62f,
+      type: 3}
+    m_TargetAsset: {fileID: 6904518085309977564, guid: 4c4af0bb603454198915ffaacebff62f,
+      type: 3}
   - m_GUID: 72356d1faaf2e4067970b0a86d27e4fb
     m_Address: goalBottle_Purple_life_2
     m_ReadOnly: 0
@@ -130,8 +132,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Bottle
-    m_MainAsset: {fileID: 2800000, guid: a9b76982754994b3a8797170d0e17c61, type: 3}
-    m_TargetAsset: {fileID: 2800000, guid: a9b76982754994b3a8797170d0e17c61, type: 3}
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   - m_GUID: aa7ee240b36514012a542141dc554ba7
     m_Address: goalBottle_Orange_life_2
     m_ReadOnly: 0
@@ -285,8 +287,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Bottle
-    m_MainAsset: {fileID: 2800000, guid: e014b4fb74d8245eaa39cf175c7599ee, type: 3}
-    m_TargetAsset: {fileID: 2800000, guid: e014b4fb74d8245eaa39cf175c7599ee, type: 3}
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 86a9d3876e9534cd69e69f31dd11bb5f, type: 2}
   m_SchemaSet:

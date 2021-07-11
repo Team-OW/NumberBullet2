@@ -291,17 +291,17 @@ namespace Treevel.Editor
                             checkEnabled: (eType) => GetTileGoalColors().Contains((EGoalColor)eType),
                             includeObsolete: false
                         );
-                        EditorGUILayout.PropertyField(bottleDataProp.FindPropertyRelative("isSelfish"));
+                        EditorGUILayout.PropertyField(bottleDataProp.FindPropertyRelative("isGhost"));
                         EditorGUILayout.PropertyField(bottleDataProp.FindPropertyRelative("isDark"));
                         EditorGUILayout.PropertyField(bottleDataProp.FindPropertyRelative("isReverse"));
                     }
                         break;
                     case EBottleType.Dynamic:
-                        EditorGUILayout.PropertyField(bottleDataProp.FindPropertyRelative("isSelfish"));
+                        EditorGUILayout.PropertyField(bottleDataProp.FindPropertyRelative("isGhost"));
                         EditorGUILayout.PropertyField(bottleDataProp.FindPropertyRelative("isReverse"));
                         break;
                     case EBottleType.AttackableDummy: {
-                        EditorGUILayout.PropertyField(bottleDataProp.FindPropertyRelative("isSelfish"));
+                        EditorGUILayout.PropertyField(bottleDataProp.FindPropertyRelative("isGhost"));
                         EditorGUILayout.PropertyField(bottleDataProp.FindPropertyRelative("isReverse"));
                     }
                         break;

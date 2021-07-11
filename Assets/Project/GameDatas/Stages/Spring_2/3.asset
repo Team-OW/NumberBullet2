@@ -48,49 +48,49 @@ MonoBehaviour:
     initPos: 4
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 5
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 6
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 1
     initPos: 7
     goalColor: 0
     life: 0
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 8
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 10
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 12
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   gimmicks:
