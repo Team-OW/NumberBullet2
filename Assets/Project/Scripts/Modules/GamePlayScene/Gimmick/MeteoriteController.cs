@@ -97,7 +97,6 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             _meteoriteRenderer.sortingOrder += 2;
             _meteoriteHoleRenderer.sortingOrder += 1;
 
-            // TODO: 特殊なTileを狙わないように指定する
             switch (gimmickData.type) {
                 case EGimmickType.Meteorite:
                     if (gimmickData.isRandom) {
