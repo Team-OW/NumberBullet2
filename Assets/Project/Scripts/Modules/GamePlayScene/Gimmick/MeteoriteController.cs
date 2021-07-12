@@ -77,6 +77,11 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
                 .Subscribe(bottle => HandleCollision(bottle.gameObject))
                 .AddTo(this);
 
+            GamePlayDirector.Instance.GameEnd.Subscribe(_ => {
+                SoundManager.Instance.StopSE(ESEKey.Gimmick_Meteorite_Drop);
+                SoundManager.Instance.StopSE(ESEKey.Gimmick_Meteorite_Collide);
+
+            }).AddTo(this);
             GamePlayDirector.Instance.GameSucceeded.Subscribe(_ => {
                 if (_shadow != null) Destroy(_shadow);
                 Destroy(gameObject);
@@ -133,7 +138,7 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
 
         public override IEnumerator Trigger()
         {
-            SoundManager.Instance.PlaySE(ESEKey.Gimmick_Meteorite_Drop);
+            var audioIndex = SoundManager.Instance.PlaySE(ESEKey.Gimmick_Meteorite_Drop);
             // 影の発生
             AsyncOperationHandle<GameObject> shadowOp;
             yield return shadowOp = AddressableAssetManager.Instantiate(Constants.Address.METEORITE_SHADOW_PREFAB);
@@ -149,12 +154,14 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             // 落下アニメーション
             yield return MoveToTargetPosition();
 
-            SoundManager.Instance.PlaySE(ESEKey.Gimmick_Meteorite_Collide);
+            SoundManager.Instance.StopSE(ESEKey.Gimmick_Meteorite_Drop, audioIndex);
+            audioIndex = SoundManager.Instance.PlaySE(ESEKey.Gimmick_Meteorite_Collide);
             // 落下後、Bottleの奥に描画する
             _meteoriteRenderer.sortingLayerName = Constants.SortingLayerName.METEORITE;
             // 隕石の跡が消えるまで待つ
             yield return new WaitUntil(() => _meteoriteAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash == _REMAINING_STATE_NAME_HASH);
             yield return new WaitUntil(() => _meteoriteAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash != _REMAINING_STATE_NAME_HASH);
+            SoundManager.Instance.StopSE(ESEKey.Gimmick_Meteorite_Collide, audioIndex);
             Destroy(_shadow);
             Destroy(gameObject);
         }
