@@ -159,7 +159,6 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             // 落下後、Bottleの奥に描画する
             _meteoriteRenderer.sortingLayerName = Constants.SortingLayerName.METEORITE;
             // 隕石の跡が消えるまで待つ
-            yield return new WaitUntil(() => _meteoriteAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash == _REMAINING_STATE_NAME_HASH);
             yield return new WaitUntil(() => _meteoriteAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash != _REMAINING_STATE_NAME_HASH);
             SoundManager.Instance.StopSE(ESEKey.Gimmick_Meteorite_Collide, audioIndex);
             Destroy(_shadow);
