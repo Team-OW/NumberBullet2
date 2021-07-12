@@ -129,7 +129,10 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
             }
 
             var position = _targetPos + _startPosMargin;
-            position = new Vector2(Mathf.Min(position.x, (GameWindowController.Instance.GetGameCoreSpaceWidth() - _meteoriteRenderer.bounds.size.x) / 2f), Mathf.Min(position.y, (GameWindowController.Instance.GetGameCoreSpaceHeight() - _meteoriteRenderer.bounds.size.y) / 2f));
+            // 画面外に発生しないように位置の調整
+            var positionX = Mathf.Min(position.x, (GameWindowController.Instance.GetGameCoreSpaceWidth() - _meteoriteRenderer.bounds.size.x) / 2f);
+            var positionY = Mathf.Min(position.y, (GameWindowController.Instance.GetGameCoreSpaceHeight() - _meteoriteRenderer.bounds.size.y) / 2f);
+            position = new Vector2(positionX, positionY);
             _attackMoveDistance = (position - _targetPos).magnitude;
             transform.position = position;
         }
