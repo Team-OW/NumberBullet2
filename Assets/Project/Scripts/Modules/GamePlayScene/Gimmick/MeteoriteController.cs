@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using Treevel.Common.Entities;
 using Treevel.Common.Entities.GameDatas;
 using Treevel.Common.Managers;
@@ -9,7 +8,6 @@ using Treevel.Modules.GamePlayScene.Bottle;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Treevel.Modules.GamePlayScene.Gimmick
