@@ -166,10 +166,10 @@ namespace Treevel.Common.Managers
                 player.clip = clip;
                 player.PlayOneShot(clip);
                 return playerIndex;
-            } else {
-                Debug.LogWarning($"Failed to Play SE: {key} because audio sources are fully assigned");
-                return -1;
             }
+
+            Debug.LogWarning($"Failed to Play SE: {key} because audio sources are fully assigned");
+            return -1;
         }
 
         /// <summary>
@@ -186,21 +186,10 @@ namespace Treevel.Common.Managers
         /// SEを停止する
         /// </summary>
         /// <param name="key"> 停止するSEのキー </param>
-        /// <param name="index"> 停止するAudioSourceのインデックス </param>
-        public void StopSE(ESEKey key, int index = -1)
+        public void StopSE(ESEKey key)
         {
             var clip = GetSEClip(key);
             if (clip == null) return;
-
-            if (0 <= index && index <= _MAX_SE_NUM) {
-                // AudioSourceのインデックスを指定する場合
-                var player = _sePlayers.ElementAt(index);
-                if (!player.clip.name.Equals(key.ToString())) return;
-
-                player.Stop();
-                player.clip = null;
-                return;
-            }
 
             var players = _sePlayers
                 .Where(src => src.clip != null && (src.clip.name == clip.name));
@@ -208,6 +197,25 @@ namespace Treevel.Common.Managers
                 player.Stop();
                 player.clip = null;
             }
+        }
+
+        /// <summary>
+        /// AudioSourceのインデックスを指定してSEを停止する
+        /// </summary>
+        /// <param name="key"> 停止するSEのキー </param>
+        /// <param name="index"> 停止するAudioSourceのインデックス </param>
+        public void StopSE(ESEKey key, int index)
+        {
+            if (index < 0 || _MAX_SE_NUM <= index) StopSE(key);
+
+            var clip = GetSEClip(key);
+            if (clip == null) return;
+
+            var player = _sePlayers.ElementAt(index);
+            if (!player.clip.name.Equals(key.ToString())) return;
+
+            player.Stop();
+            player.clip = null;
         }
 
         /// <summary>
