@@ -62,7 +62,11 @@ namespace Treevel.Modules.GamePlayScene.Gimmick
         private void Awake()
         {
             base.Awake();
-            _startPosMargin = new Vector2(2.5f * GameWindowController.Instance.GetTileWidth(), 1.5f * GameWindowController.Instance.GetTileWidth());
+            // 目標位置と右方向の距離
+            var leftMargin = 2.5f * GameWindowController.Instance.GetTileWidth();
+            // 目標位置と上方向の距離
+            var upperMargin = 1.5f * GameWindowController.Instance.GetTileWidth();
+            _startPosMargin = new Vector2(leftMargin, upperMargin);
 
             _meteoriteRenderer = _meteorite.GetComponent<SpriteRenderer>();
             _meteoriteAnimator = GetComponent<Animator>();
