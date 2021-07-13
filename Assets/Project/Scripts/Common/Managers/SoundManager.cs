@@ -151,20 +151,25 @@ namespace Treevel.Common.Managers
         /// SEを再生する
         /// </summary>
         /// <param name="key"> 再生するSEのキー </param>
-        public void PlaySE(ESEKey key)
+        /// <returns> 再生するAudioSourceのインデックス </returns>
+        public int PlaySE(ESEKey key)
         {
             var clip = GetSEClip(key);
-            if (clip == null) return;
+            if (clip == null) return -1;
 
             if (_sePlayers.Any(src => !src.isPlaying)) {
                 // 再生していないAudioSourceを探す
-                var player = _sePlayers.First(source => !source.isPlaying);
+                var playerIndex = Enumerable.Range(0, _MAX_SE_NUM)
+                    .First(i => !_sePlayers.ElementAt(i).isPlaying);
+                var player = _sePlayers.ElementAt(playerIndex);
 
                 player.clip = clip;
                 player.PlayOneShot(clip);
-            } else {
-                Debug.LogWarning($"Failed to Play SE: {key} because audio sources are fully assigned");
+                return playerIndex;
             }
+
+            Debug.LogWarning($"Failed to Play SE: {key} because audio sources are fully assigned");
+            return -1;
         }
 
         /// <summary>
@@ -192,6 +197,25 @@ namespace Treevel.Common.Managers
                 player.Stop();
                 player.clip = null;
             }
+        }
+
+        /// <summary>
+        /// AudioSourceのインデックスを指定してSEを停止する
+        /// </summary>
+        /// <param name="key"> 停止するSEのキー </param>
+        /// <param name="index"> 停止するAudioSourceのインデックス </param>
+        public void StopSE(ESEKey key, int index)
+        {
+            if (index < 0 || _MAX_SE_NUM <= index) StopSE(key);
+
+            var clip = GetSEClip(key);
+            if (clip == null) return;
+
+            var player = _sePlayers.ElementAt(index);
+            if (!player.clip.name.Equals(key.ToString())) return;
+
+            player.Stop();
+            player.clip = null;
         }
 
         /// <summary>
