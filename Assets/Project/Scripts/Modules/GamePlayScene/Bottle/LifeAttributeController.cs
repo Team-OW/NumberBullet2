@@ -2,16 +2,18 @@ using Treevel.Common.Components;
 using Treevel.Common.Entities;
 using Treevel.Common.Managers;
 using Treevel.Common.Utils;
-using Treevel.Common.Managers;
 using Treevel.Modules.GamePlayScene.Gimmick;
 using UniRx;
 using UnityEngine;
 
 namespace Treevel.Modules.GamePlayScene.Bottle
 {
+    [RequireComponent(typeof(SpriteRenderer))]
     public class LifeAttributeController : BottleAttributeControllerBase
     {
         public const int MAX_LIFE = 3;
+
+        private SpriteRenderer _spriteRenderer;
 
         private DynamicBottleController _bottleController;
 
@@ -56,7 +58,11 @@ namespace Treevel.Modules.GamePlayScene.Bottle
             base.Awake();
             _lifeSpriteRenderer = _lifeObject.GetComponent<SpriteRenderer>();
             // 描画順序の設定
-            spriteRenderer.sortingOrder = EBottleAttributeType.Life.GetOrderInLayer();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            var sortingOrder = EBottleAttributeType.Life.GetOrderInLayer();
+            _spriteRenderer.sortingOrder = sortingOrder;
+            _lifeSpriteRenderer.sortingOrder = sortingOrder + 1;
+
         }
 
         public void Initialize(GoalBottleController bottleController, int life)
@@ -81,7 +87,7 @@ namespace Treevel.Modules.GamePlayScene.Bottle
             } else {
                 // ゲーム開始時に描画する
                 GamePlayDirector.Instance.StagePrepared.Subscribe(_ => {
-                    spriteRenderer.enabled = true;
+                    _spriteRenderer.enabled = true;
                     _lifeSpriteRenderer.enabled = true;
                 }).AddTo(compositeDisposableOnGameEnd, this);
                 GamePlayDirector.Instance.GameStart.Subscribe(_ => animator.enabled = true).AddTo(this);
