@@ -47,6 +47,10 @@ MonoBehaviour:
     goalColor: 8
     number: 11
     pairNumber: 0
+  - type: 4
+    goalColor: 0
+    number: 1
+    pairNumber: 0
   bottles:
   - type: 0
     initPos: 3
@@ -59,7 +63,7 @@ MonoBehaviour:
     initPos: 4
     goalColor: 1
     life: 3
-    isGhost: 0
+    isGhost: 1
     isDark: 0
     isReverse: 0
   - type: 2
