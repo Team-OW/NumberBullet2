@@ -10,7 +10,7 @@ namespace Treevel.Common.Entities.GameDatas
         [Range(1, 15)] public short initPos;
         public EGoalColor goalColor;
         public short life;
-        public bool isSelfish;
+        public bool isGhost;
         public bool isDark;
         public bool isReverse;
     }

@@ -47,68 +47,72 @@ MonoBehaviour:
     goalColor: 8
     number: 11
     pairNumber: 0
+  - type: 4
+    goalColor: 0
+    number: 1
+    pairNumber: 0
   bottles:
   - type: 0
     initPos: 3
     goalColor: 0
     life: 3
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 4
     goalColor: 1
     life: 3
-    isSelfish: 1
+    isGhost: 1
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 5
     goalColor: 2
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 1
     isReverse: 0
   - type: 2
     initPos: 6
     goalColor: 3
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 1
   - type: 2
     initPos: 7
     goalColor: 4
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 8
     goalColor: 5
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 9
     goalColor: 6
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 10
     goalColor: 7
     life: 3
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 14
     goalColor: 8
     life: 3
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   gimmicks:

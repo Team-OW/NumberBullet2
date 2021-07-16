@@ -52,70 +52,70 @@ MonoBehaviour:
     initPos: 4
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 5
     goalColor: 1
     life: 2
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 6
     goalColor: 1
     life: 3
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 7
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 8
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 9
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 10
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 2
     initPos: 14
     goalColor: 1
     life: 1
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 3
     initPos: 12
     goalColor: 0
     life: 0
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   - type: 1
     initPos: 15
     goalColor: 0
     life: 0
-    isSelfish: 0
+    isGhost: 0
     isDark: 0
     isReverse: 0
   gimmicks:
@@ -165,8 +165,10 @@ MonoBehaviour:
     image:
       m_AssetGUID: 
       m_SubObjectName: 
+      m_SubObjectType: 
     video:
       m_AssetGUID: bc5b2bb6f567248d99077e4108b390d0
       m_SubObjectName: 
+      m_SubObjectType: 
   constraintStages:
   - Spring-1-1

@@ -276,6 +276,7 @@ namespace Treevel.Modules.GamePlayScene
         /// <returns> ボトルが移動できたかどうか </returns>
         public async UniTask<bool> MoveAsync(DynamicBottleController bottle, int tileNum, Vector2Int direction)
         {
+            if (!bottle.IsMovable) return false;
             if (!MoveBottleInSquares(bottle, tileNum, out var targetSquare)) return false;
 
             var bottleObject = bottle.gameObject;

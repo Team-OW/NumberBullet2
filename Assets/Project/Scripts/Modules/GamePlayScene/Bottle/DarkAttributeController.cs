@@ -4,8 +4,11 @@ using UnityEngine;
 
 namespace Treevel.Modules.GamePlayScene.Bottle
 {
+    [RequireComponent(typeof(SpriteRenderer))]
     public class DarkAttributeController : BottleAttributeControllerBase
     {
+        private SpriteRenderer _spriteRenderer;
+
         private GoalBottleController _bottleController;
 
         /// <summary>
@@ -18,11 +21,12 @@ namespace Treevel.Modules.GamePlayScene.Bottle
         protected override void Awake()
         {
             base.Awake();
-            GamePlayDirector.Instance.StagePrepared.Subscribe(_ => spriteRenderer.enabled = true).AddTo(compositeDisposableOnGameEnd, this);
+            GamePlayDirector.Instance.StagePrepared.Subscribe(_ => _spriteRenderer.enabled = true).AddTo(compositeDisposableOnGameEnd, this);
             GamePlayDirector.Instance.GameStart.Subscribe(_ => animator.enabled = true).AddTo(compositeDisposableOnGameEnd,this);
             GamePlayDirector.Instance.GameEnd.Subscribe(_ => animator.enabled = false).AddTo(this);
             // 描画順序の設定
-            spriteRenderer.sortingOrder = EBottleAttributeType.Dark.GetOrderInLayer();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _spriteRenderer.sortingOrder = EBottleAttributeType.Dark.GetOrderInLayer();
         }
 
         public void Initialize(GoalBottleController bottleController)
