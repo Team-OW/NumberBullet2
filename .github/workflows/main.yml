@@ -35,5 +35,5 @@ jobs:
           testMode: ${{ matrix.testMode }}
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
-        with: 
+        with:
           path: ${{ steps.tests.outputs.artifactsPath }}
