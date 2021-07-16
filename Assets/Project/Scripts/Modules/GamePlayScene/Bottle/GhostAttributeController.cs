@@ -12,6 +12,8 @@ namespace Treevel.Modules.GamePlayScene.Bottle
 
         [SerializeField] private SpriteRenderer _ghostRenderer;
         [SerializeField] private SpriteRenderer _backgroundRenderer;
+        [SerializeField] private ParticleSystem _ghostParticle;
+        [SerializeField] private ParticleSystemRenderer _ghostParticleRenderer;
 
         private DynamicBottleController _bottleController;
 
@@ -28,11 +30,13 @@ namespace Treevel.Modules.GamePlayScene.Bottle
             }).AddTo(compositeDisposableOnGameEnd, this);
             GamePlayDirector.Instance.GameEnd.Subscribe(_ => {
                 animator.enabled = false;
+                _ghostParticle.Pause();
             }).AddTo(this);
             // 描画順序の設定
             var sortingOrder = EBottleAttributeType.Ghost.GetOrderInLayer();
             _backgroundRenderer.sortingOrder = sortingOrder;
-            _ghostRenderer.sortingOrder = sortingOrder + 1;
+            _ghostParticleRenderer.sortingOrder = sortingOrder + 1;
+            _ghostRenderer.sortingOrder = sortingOrder + 2;
         }
 
         public void Initialize(DynamicBottleController bottleController)
@@ -50,6 +54,14 @@ namespace Treevel.Modules.GamePlayScene.Bottle
             _bottleController.releaseGesture.OnRelease.AsObservable()
                 .Subscribe(_ => animator.SetFloat(_ANIMATOR_PARAM_FLOAT_SPEED, 1f))
                 .AddTo(compositeDisposableOnGameEnd, this);
+        }
+
+        /// <summary>
+        /// Particleを発生させる(Animationから呼び出し)
+        /// </summary>
+        public void PlayParticle()
+        {
+            _ghostParticle.Play();
         }
 
         /// <summary>
