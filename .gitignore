@@ -51,5 +51,5 @@ Assets/GoogleMobileAds/Resources/*
 Assets/GoogleMobileAds/Resources.meta
 
 # For iOS AddressableAssetsData
-Assets/AddressableAssetsData/iOS/*
-Assets/AddressableAssetsData/iOS.meta
+# Assets/AddressableAssetsData/iOS/*
+# Assets/AddressableAssetsData/iOS.meta
