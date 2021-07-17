@@ -2,16 +2,15 @@ using UnityEngine;
 
 namespace Treevel.Common.Components.UIs
 {
+    [RequireComponent(typeof(Animator))]
     public class TapObjectController : MonoBehaviour
     {
-        private const float _TIME_LIMIT = 0.5f;
-        private float _time = 0f;
-
-        // Update is called once per frame
-        void Update()
+        /// <summary>
+        /// 自身を削除する(Animatorから呼び出し)
+        /// </summary>
+        public void Destroy()
         {
-            _time += Time.deltaTime;
-            if (_time >= _TIME_LIMIT) Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }

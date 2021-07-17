@@ -131,6 +131,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 9198566219181489130, guid: bcdd55f7084414d3abbbc9c63e4e6be5,
+        type: 3}
+      propertyPath: tapObjectController
+      value: 
+      objectReference: {fileID: 8656462738521654879, guid: f21d41771d4f6476b92437617ec286c7,
+        type: 3}
     - target: {fileID: 9198566219181489131, guid: bcdd55f7084414d3abbbc9c63e4e6be5,
         type: 3}
       propertyPath: m_Name
